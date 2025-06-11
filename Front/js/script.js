@@ -148,31 +148,11 @@ function buscarProdutos() {
                     <p><strong>Fabricante:</strong> ${produto.fabricante}</p>
                     <p><strong>Preço:</strong> R$ ${produto.preco ? produto.preco.toFixed(2) : 'N/A'}</p>
                     <p><strong>Quantidade:</strong> ${produto.quantidade ? produto.quantidade : 'N/A'}</p>
-                    <button class="btn danger small" onclick="removerProdutoPorId(${produto.id})">Remover por ID</button>
                 `;
                 productListDiv.appendChild(productCard);
             });
         })
         .catch(error => console.error('Erro ao carregar produtos:', error));
-}
-
-function removerProdutoPorId(id) {
-    if (confirm(`Tem certeza que deseja remover o produto com ID: ${id}?`)) {
-        fetch(`http://localhost:8080/api/produtos/${id}`, {
-            method: 'DELETE'
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Produto removido com sucesso!');
-                buscarProdutos();
-            } else if (response.status === 404) {
-                alert('Produto não encontrado.');
-            } else {
-                alert('Erro ao remover o produto.');
-            }
-        })
-        .catch(error => console.error('Erro:', error));
-    }
 }
 
 function limparCamposCadastro() {
