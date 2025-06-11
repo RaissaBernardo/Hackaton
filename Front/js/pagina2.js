@@ -9,7 +9,7 @@ function buscarTodosProdutos() {
         })
         .then(produtos => {
             produtosDisponiveis = produtos;
-            localStorage.setItem('produtos', JSON.stringify(produtos)); // Cache for cart simulation
+            localStorage.setItem('produtos', JSON.stringify(produtos)); 
             exibirProdutos(produtosDisponiveis);
             exibirCarrinho();
         })
