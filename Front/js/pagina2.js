@@ -133,7 +133,7 @@ function finalizarCompra() {
     }
 
     cart.forEach(item => {
-        const produto = produtosDisponiveis.find(p => p.nome === item.nome);
+        const produto = produtosDisponiveis.find(p => p.quantidade === item.quantidade);
         if (produto) {
             produto.quantidade -= item.quantidadeCarrinho;
         }
