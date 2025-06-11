@@ -1,60 +1,72 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Hackaton</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <title>Hackaton</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>HACKATON</h1>
+    <h1>HACKATON</h1>
 
-  <div class="search-bar">
-    <input type="text" placeholder="🔍 Buscar produto...">
-  </div>
-
-  <section class="form-section">
-    <h2>Insira o produto desejado <span>• Busca de produtos</span></h2>
-
-    <div class="form-left">
-      <label>Nome:
-        <input type="text" id="nome">
-      </label>
-      <label>Descrição:
-        <input type="text" id="descricao">
-      </label>
-      <label>Cor:
-        <input type="text" id="cor">
-      </label>
-      <label>Fabricante:
-        <input type="text" id="fabricante">
-      </label>
-      <label>Preço:
-        <input type="number" id="preco">
-      </label>
-      <label>Quantidade:
-        <input type="number" id="quantidade">
-      </label>
-      <label>Link da imagem do produto:
-        <input type="url" id="imagem" placeholder="https://exemplo.com/imagem.jpg" oninput="previewImagem()">
-      </label>
-
-
-      <button class="btn" onclick="cadastrarProduto()">📦 Cadastrar Produto</button>
+    <div class="search-bar">
+        <input type="text" placeholder="🔍 Buscar produto...">
+        <button class="btn" onclick="buscarProdutos()">Buscar</button>
     </div>
 
-    <div class="form-right">
-      <p><strong>Pré-visualização:</strong></p>
-      <img id="preview" class="image-preview" src="" alt="Prévia da imagem" hidden>
-    </div>
-  </section>
+    <section class="form-section">
+        <h2>Insira o produto desejado <span>• Cadastro de Produtos</span></h2>
 
-  <section class="remove-section">
-    <label>Remover produto pelo nome:
-      <input type="text" id="nomeRemover">
-    </label>
-    <button class="btn danger" onclick="removerProduto()">🗑️ Remover Produto</button>
-  </section>
+        <div class="form-left">
+            <label>Nome:
+                <input type="text" id="nome">
+            </label>
+            <label>Descrição:
+                <input type="text" id="descricao">
+            </label>
+            <label>Cor:
+                <input type="text" id="cor">
+            </label>
+            <label>Fabricante:
+                <input type="text" id="fabricante">
+            </label>
+            <label>Preço:
+                <input type="number" id="preco" step="0.01"> </label>
+            <label>Quantidade:
+                <input type="number" id="quantidade">
+            </label>
 
-  <script src="js/script.js"></script>
+            <div id="imagens-container">
+                <label>URL da Imagem (1):
+                    <input type="url" class="imagem-url-input" placeholder="https://exemplo.com/imagem1.jpg" oninput="previewAllImages()">
+                </label>
+            </div>
+            <button type="button" class="btn" onclick="adicionarCampoImagem()">+ Adicionar outra imagem</button>
+
+
+            <button class="btn" onclick="cadastrarProduto()">📦 Cadastrar Produto</button>
+        </div>
+
+        <div class="form-right">
+            <p><strong>Pré-visualização das Imagens:</strong></p>
+            <div id="preview-container" class="image-preview-container">
+                </div>
+        </div>
+    </section>
+
+    <section class="remove-section">
+        <h2>Remover produtos</h2>
+        <label>Remover produto pelo nome:
+            <input type="text" id="nomeRemover">
+        </label>
+        <button class="btn danger" onclick="removerProduto()">🗑️ Remover Produto</button>
+    </section>
+
+    <hr> <section class="product-list-section">
+        <h2>Produtos Disponíveis</h2>
+        <div id="product-list" class="product-grid">
+            </div>
+    </section>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
