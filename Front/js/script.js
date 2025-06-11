@@ -29,7 +29,7 @@ function adicionarCampoImagem() {
 
 function cadastrarProduto() {
     const nome = document.getElementById('nome').value;
-    const textoDescritivo = document.getElementById('descricao').value;
+    const descricao = document.getElementById('descricao').value;
     const cor = document.getElementById('cor').value;
     const fabricante = document.getElementById('fabricante').value;
     const preco = parseFloat(document.getElementById('preco').value);
@@ -42,14 +42,14 @@ function cadastrarProduto() {
         }
     });
 
-    if (!nome || !textoDescritivo || !cor || !fabricante || isNaN(preco) || isNaN(quantidade)) {
+    if (!nome || !descricao || !cor || !fabricante || isNaN(preco) || isNaN(quantidade)) {
         alert("Por favor, preencha todos os campos obrigatórios e garanta que Preço e Quantidade são números válidos.");
         return;
     }
 
     const produtoData = {
         nome: nome,
-        textoDescritivo: textoDescritivo,
+        descricao: descricao,
         cor: cor,
         fabricante: fabricante,
         preco: preco,
@@ -79,6 +79,7 @@ function cadastrarProduto() {
     })
     .catch(error => console.error('Erro de rede ou na requisição:', error));
 }
+
 
 function removerProduto() {
     const nome = document.getElementById('nomeRemover').value;
