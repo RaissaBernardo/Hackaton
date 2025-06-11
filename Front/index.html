@@ -2,56 +2,78 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Hackaton</title>
+    <title>Hackaton - Cadastro de Produtos</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>HACKATON</h1>
+    <header>
+        <h1>HACKATON</h1>
+        <nav class="menu">
+            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <ul id="menu-links" class="menu-links">
+                <li><a href="pagina2.html">Home</a></li>
+                <li><a href="cadastro.html">Cadastrar Produto</a></li>
+                <li><a href="#" onclick="alert('Sobre nós: Hackaton E-commerce')">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="search-bar">
         <input type="text" id="busca-nome" placeholder="Buscar produto...">
         <button class="btn" onclick="buscarProdutoPorNome()">Buscar</button>
     </div>
 
-    <section class="form-section">
-        <h2>Insira o produto desejado <span>• Cadastro de Produtos</span></h2>
+    <div id="login-section" class="login-section">
+        <h2>Login</h2>
+        <label>Usuário:
+            <input type="text" id="login-username" placeholder="Digite o usuário">
+        </label>
+        <label>Senha:
+            <input type="password" id="login-password" placeholder="Digite a senha">
+        </label>
+        <button class="btn" onclick="fazerLogin()">Entrar</button>
+        <span id="login-error" class="error-message"></span>
+    </div>
 
+    <section id="cadastro-section" class="form-section" style="display: none;">
+        <h2>Insira o produto desejado <span>• Cadastro de Produtos</span></h2>
         <div class="form-left">
             <label>Nome:
                 <input type="text" id="nome">
+                <span class="error-message" id="error-nome"></span>
             </label>
             <label>Descrição:
                 <input type="text" id="descricao">
+                <span class="error-message" id="error-descricao"></span>
             </label>
             <label>Cor:
                 <input type="text" id="cor">
+                <span class="error-message" id="error-cor"></span>
             </label>
-
-            
             <label>Fabricante:
                 <input type="text" id="fabricante">
+                <span class="error-message" id="error-fabricante"></span>
             </label>
             <label>Preço:
-                <input type="number" id="preco" step="0.01"> </label>
+                <input type="number" id="preco" step="0.01">
+                <span class="error-message" id="error-preco"></span>
+            </label>
             <label>Quantidade:
                 <input type="number" id="quantidade">
+                <span class="error-message" id="error-quantidade"></span>
             </label>
-
             <div id="imagens-container">
                 <label>URL da Imagem (1):
                     <input type="url" class="imagem-url-input" placeholder="https://exemplo.com/imagem1.jpg" oninput="previewAllImages()">
                 </label>
             </div>
+            <span id="error-imagens" class="error-message"></span>
             <button type="button" class="btn" onclick="adicionarCampoImagem()">+ Adicionar outra imagem</button>
-
-
             <button class="btn" onclick="cadastrarProduto()">📦 Cadastrar Produto</button>
         </div>
-
         <div class="form-right">
             <p><strong>Pré-visualização das Imagens:</strong></p>
-            <div id="preview-container" class="image-preview-container">
-                </div>
+            <div id="preview-container" class="image-preview-container"></div>
         </div>
     </section>
 
@@ -63,12 +85,11 @@
         <button class="btn danger" onclick="removerProduto()">🗑️ Remover Produto</button>
     </section>
 
-    <hr> <section class="product-list-section">
+    <section class="product-list-section">
         <h2>Produtos Disponíveis</h2>
-        <div id="product-list" class="product-grid">
-            </div>
+        <div id="product-list" class="product-grid"></div>
     </section>
 
-    <script src="js/script.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

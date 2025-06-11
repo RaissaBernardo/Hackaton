@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Hackaton - Produtos</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>HACKATON</h1>
+        <nav class="menu">
+            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <ul id="menu-links" class="menu-links">
+                <li><a href="pagina2.html">Home</a></li>
+                <li><a href="index.html">Cadastrar Produto</a></li>
+                <li><a href="#" onclick="alert('Sobre nós: Hackaton E-commerce')">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" id="busca-nome" placeholder="Buscar produto...">
+        <button class="btn" onclick="buscarProdutoPorNome()">Buscar</button>
+    </div>
+
+    <section class="product-list-section">
+        <h2>Produtos Disponíveis</h2>
+        <div id="product-list" class="product-grid"></div>
+    </section>
+
+    <section class="cart-section">
+        <h2>Carrinho de Compras</h2>
+        <div id="cart-list"></div>
+        <p><strong>Total:</strong> R$ <span id="cart-total">0.00</span></p>
+        <button class="btn" onclick="finalizarCompra()">Finalizar Compra</button>
+    </section>
+
+    <script src="js/pagina2.js"></script>
+</body>
+</html>

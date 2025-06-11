@@ -1,4 +1,5 @@
-let produtosDisponiveis = []; // Armazena todos os produtos disponíveis ao carregar a página
+let produtosDisponiveis = [];
+let isLoggedIn = false;
 
 function previewAllImages() {
     const previewContainer = document.getElementById('preview-container');
@@ -18,6 +19,10 @@ function previewAllImages() {
 }
 
 function adicionarCampoImagem() {
+    if (!isLoggedIn) {
+        alert('Faça login para adicionar imagens.');
+        return;
+    }
     const imagensContainer = document.getElementById('imagens-container');
     const inputCount = document.querySelectorAll('.imagem-url-input').length + 1;
     const newLabel = document.createElement('label');
@@ -29,27 +34,102 @@ function adicionarCampoImagem() {
 }
 
 function cadastrarProduto() {
-    const nome = document.getElementById('nome').value;
-    const descricao = document.getElementById('descricao').value;
-    const cor = document.getElementById('cor').value;
-    const fabricante = document.getElementById('fabricante').value;
-    const preco = parseFloat(document.getElementById('preco').value);
-    const quantidade = parseInt(document.getElementById('quantidade').value);
+    if (!isLoggedIn) {
+        alert('Faça login para cadastrar produtos.');
+        return;
+    }
+
+    const camposErro = ['nome', 'descricao', 'cor', 'fabricante', 'preco', 'quantidade', 'imagens'];
+    camposErro.forEach(campo => {
+        document.getElementById('error-' + campo).textContent = '';
+    });
+
+    const nome = document.getElementById('nome').value.trim();
+    const descricao = document.getElementById('descricao').value.trim();
+    const cor = document.getElementById('cor').value.trim();
+    const fabricante = document.getElementById('fabricante').value.trim();
+    const precoStr = document.getElementById('preco').value.trim();
+    const quantidadeStr = document.getElementById('quantidade').value.trim();
+
+    const preco = parseFloat(precoStr);
+    const quantidade = parseInt(quantidadeStr);
 
     const imagens = [];
+    let urlInvalida = false;
     document.querySelectorAll('.imagem-url-input').forEach(input => {
-        if (input.value && (input.value.startsWith('http://') || input.value.startsWith('https://'))) {
-            imagens.push(input.value);
+        const url = input.value.trim();
+        if (url) {
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                imagens.push(url);
+            } else {
+                urlInvalida = true;
+            }
+        } else {
+            urlInvalida = true;
         }
     });
 
-    if (!nome || !descricao || !cor || !fabricante || isNaN(preco) || isNaN(quantidade)) {
-        alert("Preencha todos os campos obrigatórios corretamente.");
+    let temErro = false;
+
+    if (!nome) {
+        document.getElementById('error-nome').textContent = "O nome é obrigatório.";
+        temErro = true;
+    } else if (nome.length < 10) {
+        document.getElementById('error-nome').textContent = "O nome deve ter pelo menos 10 caracteres.";
+        temErro = true;
+    }
+
+    if (!descricao) {
+        document.getElementById('error-descricao').textContent = "A descrição é obrigatória.";
+        temErro = true;
+    } else if (descricao.length < 20) {
+        document.getElementById('error-descricao').textContent = "A descrição deve ter pelo menos 20 caracteres.";
+        temErro = true;
+    }
+
+    if (!cor) {
+        document.getElementById('error-cor').textContent = "A cor é obrigatória.";
+        temErro = true;
+    }
+
+    if (!fabricante) {
+        document.getElementById('error-fabricante').textContent = "O fabricante é obrigatório.";
+        temErro = true;
+    }
+
+    if (!precoStr) {
+        document.getElementById('error-preco').textContent = "O preço é obrigatório.";
+        temErro = true;
+    } else if (isNaN(preco)) {
+        document.getElementById('error-preco').textContent = "O preço deve ser um número válido.";
+        temErro = true;
+    }
+
+    if (!quantidadeStr) {
+        document.getElementById('error-quantidade').textContent = "A quantidade é obrigatória.";
+        temErro = true;
+    } else if (isNaN(quantidade)) {
+        document.getElementById('error-quantidade').textContent = "A quantidade deve ser um número válido.";
+        temErro = true;
+    }
+
+    if (imagens.length === 0 || urlInvalida) {
+        document.getElementById('error-imagens').textContent = "Todas as URLs de imagens são obrigatórias e devem começar com http:// ou https://";
+        temErro = true;
+    }
+
+    if (temErro) {
         return;
     }
 
     const produtoData = {
-        nome, textoDescritivo: descricao, cor, fabricante, preco, quantidade, imagens
+        nome,
+        textoDescritivo: descricao,
+        cor,
+        fabricante,
+        preco,
+        quantidade,
+        imagens
     };
 
     fetch('http://localhost:8080/api/produtos', {
@@ -61,7 +141,7 @@ function cadastrarProduto() {
         if (response.ok) {
             alert('Produto cadastrado com sucesso!');
             limparCamposCadastro();
-            buscarTodosProdutos(); // Atualiza a lista de produtos disponíveis
+            buscarTodosProdutos();
         } else {
             response.json().then(data => {
                 alert('Erro ao cadastrar: ' + (data.message || response.statusText));
@@ -74,13 +154,18 @@ function cadastrarProduto() {
 }
 
 function removerProduto() {
-    const nome = document.getElementById('nomeRemover').value;
-    if (!nome) {
-        alert("Informe o nome do produto a ser removido.");
+    if (!isLoggedIn) {
+        alert('Faça login para remover produtos.');
         return;
     }
 
-    fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(nome)}`, {
+    const nomeRemover = document.getElementById('nomeRemover').value.trim();
+    if (!nomeRemover) {
+        alert('Digite o nome do produto para remover.');
+        return;
+    }
+
+    fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(nomeRemover)}`, {
         method: 'DELETE'
     })
     .then(response => {
@@ -88,10 +173,12 @@ function removerProduto() {
             alert('Produto removido com sucesso!');
             document.getElementById('nomeRemover').value = '';
             buscarTodosProdutos();
-        } else if (response.status === 404) {
-            alert('Produto não encontrado.');
         } else {
-            alert('Erro ao remover o produto.');
+            response.json().then(data => {
+                alert('Erro ao remover: ' + (data.message || response.statusText));
+            }).catch(() => {
+                alert('Erro ao remover produto.');
+            });
         }
     })
     .catch(error => console.error('Erro na requisição:', error));
@@ -170,6 +257,27 @@ function limparCamposCadastro() {
             <input type="url" class="imagem-url-input" placeholder="https://exemplo.com/imagem1.jpg" oninput="previewAllImages()">
         </label>`;
     document.getElementById('preview-container').innerHTML = '';
+}
+
+function fazerLogin() {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+    const errorMessage = document.getElementById('login-error');
+
+    if (username === 'admin' && password === 'admin') {
+        isLoggedIn = true;
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('cadastro-section').style.display = 'block';
+        alert('Login realizado com sucesso!');
+        buscarTodosProdutos();
+    } else {
+        errorMessage.textContent = 'Usuário ou senha inválidos.';
+    }
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('menu-links');
+    menu.classList.toggle('active');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
