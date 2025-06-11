@@ -80,7 +80,6 @@ function cadastrarProduto() {
     .catch(error => console.error('Erro de rede ou na requisição:', error));
 }
 
-
 function removerProduto() {
     const nome = document.getElementById('nomeRemover').value;
 
