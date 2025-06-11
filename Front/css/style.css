@@ -470,3 +470,220 @@ footer p {
         padding: 20px;
     }
 }
+
+/* Seu CSS existente até a seção Modal... */
+
+/* Modal */
+.modal {
+    display: none; /* Escondido por padrão, controlado via JS */
+    position: fixed; /* Fica por cima de tudo */
+    z-index: 1000; /* Garante que esteja acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    background-color: rgba(0, 0, 0, 0.75); /* Overlay escuro semi-transparente */
+    display: flex; /* Usar flexbox para centralizar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    padding: 20px; /* Padding interno para telas pequenas */
+    box-sizing: border-box; /* Garante que padding não adicione à largura/altura */
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #1A1A1A 0%, #252525 100%); /* Fundo degradê escuro */
+    padding: 40px; /* Padding interno consistente com as seções */
+    border-radius: 16px; /* Bordas arredondadas consistentes */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Sombra mais forte */
+    width: 90%; /* Largura padrão */
+    max-width: 700px; /* Largura máxima para telas maiores */
+    position: relative; /* Para o botão fechar */
+    max-height: 90vh; /* Altura máxima para permitir rolagem */
+    overflow-y: auto; /* Habilita rolagem vertical se o conteúdo exceder */
+    box-sizing: border-box;
+    display: flex; /* Torna-o um contêiner flexível */
+    flex-direction: column;
+    gap: 15px; /* Espaço entre os elementos do formulário */
+}
+
+.modal-content h2 {
+    color: #FFFFFF; /* Título branco */
+    font-size: 2.2rem; /* Tamanho consistente com h2 das seções */
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    border-bottom: 2px solid rgba(96, 165, 250, 0.4); /* Linha de borda azul suave */
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Ícones nos títulos do modal */
+.modal-content h2 i {
+    color: #60A5FA; /* Cor do ícone */
+    margin-right: 5px;
+}
+
+.modal-content label {
+    display: block;
+    margin: 15px 0 8px; /* Margem entre labels e inputs */
+    color: #E5E5E5;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Inputs dentro do modal */
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="url"],
+.modal-content input[type="password"],
+.modal-content textarea { /* Adicionado textarea para descrição */
+    width: 100%; /* Preenche a largura do label */
+    padding: 14px;
+    border: 2px solid #3A3A3A;
+    border-radius: 12px;
+    background-color: #1A1A1A; /* Fundo do input */
+    color: #E5E5E5;
+    font-size: 1.1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    box-sizing: border-box;
+}
+
+.modal-content textarea {
+    min-height: 80px; /* Altura mínima para textarea */
+    resize: vertical; /* Permite redimensionar verticalmente */
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+    outline: none;
+    border-color: #60A5FA;
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+    transform: scale(1.01); /* Leve zoom no foco */
+}
+
+/* Botões dentro do modal */
+.modal-content .btn {
+    padding: 14px 28px;
+    background: linear-gradient(45deg, #1E40AF, #60A5FA); /* Degradê azul */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    width: fit-content; /* Ajusta a largura ao conteúdo */
+    margin: 15px auto; /* Centraliza e adiciona margem */
+}
+
+.modal-content .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(96, 165, 250, 0.5);
+    background: linear-gradient(45deg, #2B4B9B, #7BB5FB);
+}
+
+.modal-content .btn.danger {
+    background: linear-gradient(45deg, #7F1D1D, #F87171); /* Degradê vermelho */
+}
+
+.modal-content .btn.danger:hover {
+    box-shadow: 0 6px 16px rgba(248, 113, 113, 0.5);
+    background: linear-gradient(45deg, #991B1B, #FCA5A5);
+}
+
+.modal-content .close { /* Botão de fechar do modal */
+    color: #E5E5E5;
+    font-size: 2.5rem;
+    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+    color: #F87171; /* Vermelho no hover */
+    transform: rotate(90deg);
+}
+
+
+#edit-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #3A3A3A; 
+    padding: 15px;
+    min-height: 100px; 
+    width: 100%;
+    border-radius: 12px;
+    background-color: #1A1A1A; 
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#edit-preview-container .image-preview {
+    max-width: 100px;
+    height: 100px;
+    object-fit: cover; 
+    border-radius: 8px;
+    border: 2px solid #60A5FA; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+#edit-preview-container .image-preview:hover {
+    transform: scale(1.05);
+}
+
+.modal-content #edit-imagens-container label {
+    margin-bottom: 10px;
+}
+.modal-content .imagem-url-input-modal {
+    margin-bottom: 8px;
+}
+
+.modal-content .error-message {
+    color: #F87171; 
+    font-size: 0.95rem;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: block;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 25px;
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .modal-content input[type="text"],
+    .modal-content input[type="number"],
+    .modal-content input[type="url"],
+    .modal-content input[type="password"],
+    .modal-content textarea {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .modal-content .btn {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
