@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Hackaton</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>HACKATON</h1>
+
+  <div class="search-bar">
+    <input type="text" placeholder="🔍 Buscar produto...">
+  </div>
+
+  <section class="form-section">
+    <h2>Insira o produto desejado <span>• Busca de produtos</span></h2>
+
+    <div class="form-left">
+      <label>Nome:
+        <input type="text" id="nome">
+      </label>
+      <label>Descrição:
+        <input type="text" id="descricao">
+      </label>
+      <label>Cor:
+        <input type="text" id="cor">
+      </label>
+      <label>Fabricante:
+        <input type="text" id="fabricante">
+      </label>
+      <label>Preço:
+        <input type="number" id="preco">
+      </label>
+      <label>Quantidade:
+        <input type="number" id="quantidade">
+      </label>
+      <label>Imagem do produto:
+        <input type="file" id="imagem" accept="image/*" onchange="previewImagem()">
+      </label>
+
+      <button class="btn" onclick="cadastrarProduto()">📦 Cadastrar Produto</button>
+    </div>
+
+    <div class="form-right">
+      <p><strong>Pré-visualização:</strong></p>
+      <img id="preview" class="image-preview" src="" alt="Prévia da imagem" hidden>
+    </div>
+  </section>
+
+  <section class="remove-section">
+    <label>Remover produto pelo nome:
+      <input type="text" id="nomeRemover">
+    </label>
+    <button class="btn danger" onclick="removerProduto()">🗑️ Remover Produto</button>
+  </section>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+body {
+  background-color: #0e0e0e;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #b366ff;
+  font-size: 40px;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+.search-bar {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.search-bar input {
+  width: 80%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  background-color: #fff;
+}
+
+.form-section {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.form-section h2 {
+  width: 100%;
+  color: #b3f0ff;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.form-section span {
+  color: #00ffff;
+}
+
+.form-left {
+  flex: 1;
+  min-width: 300px;
+}
+
+.form-left label {
+  display: block;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.form-left input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f1f1f1;
+  margin-top: 5px;
+}
+
+.form-left input[type="file"] {
+  padding: 5px;
+  background-color: transparent;
+  color: white;
+}
+
+.form-right {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+}
+
+.image-preview {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 3px solid #4ef0f0;
+  margin-top: 15px;
+}
+
+.remove-section {
+  color: #00f0ff;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.remove-section input {
+  margin-left: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  border: none;
+  background-color: #f1f1f1;
+}
+
+/* Botões estilosos */
+.btn {
+  margin-top: 20px;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 12px;
+  background-color: #b366ff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #9933ff;
+  transform: scale(1.05);
+}
+
+.btn.danger {
+  background-color: #ff4d4d;
+  margin-left: 15px;
+}
+
+.btn.danger:hover {
+  background-color: #e60000;
+}
