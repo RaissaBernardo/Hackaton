@@ -74,8 +74,8 @@ function cadastrarProduto() {
     if (!nome) {
         document.getElementById('error-nome').textContent = "O nome é obrigatório.";
         temErro = true;
-    } else if (nome.length < 10) {
-        document.getElementById('error-nome').textContent = "O nome deve ter pelo menos 10 caracteres.";
+    } else if (nome.length < 5) {
+        document.getElementById('error-nome').textContent = "O nome deve ter pelo menos 8 caracteres.";
         temErro = true;
     }
 
