@@ -27,7 +27,6 @@ function adicionarCampoImagem() {
     imagensContainer.appendChild(newLabel);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
 function cadastrarProduto() {
     const nome = document.getElementById('nome').value;
     const descricao = document.getElementById('descricao').value;
@@ -80,8 +79,6 @@ function cadastrarProduto() {
     })
     .catch(error => console.error('Erro de rede ou na requisição:', error));
 }
-});
-
 
 function removerProduto() {
     const nome = document.getElementById('nomeRemover').value;
