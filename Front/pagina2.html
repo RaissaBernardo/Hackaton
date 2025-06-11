@@ -2,37 +2,46 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hackaton - Produtos</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
-        <h1>HACKATON</h1>
+        <h1><i class="fas fa-rocket"></i> HACKATON</h1>
         <nav class="menu">
-            <div class="menu-icon" onclick="toggleMenu()">☰</div>
+            <div class="menu-icon" onclick="toggleMenu()"><i class="fas fa-bars"></i></div>
             <ul id="menu-links" class="menu-links">
-                <li><a href="pagina2.html">Home</a></li>
-                <li><a href="index.html">Cadastrar Produto</a></li>
+                <li><a href="pagina2.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="index.html"><i class="fas fa-box"></i> Cadastrar Produto</a></li>
             </ul>
         </nav>
     </header>
 
-    <div class="search-bar">
-        <input type="text" id="busca-nome" placeholder="Buscar produto...">
-        <button class="btn" onclick="buscarProdutoPorNome()">Buscar</button>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="busca-nome" placeholder="Buscar produto...">
+            <button class="btn" onclick="buscarProdutoPorNome()"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+
+        <section class="product-list-section">
+            <h2><i class="fas fa-list"></i> Produtos Disponíveis</h2>
+            <div id="product-list" class="product-grid"></div>
+        </section>
+
+        <section class="cart-section">
+            <h2><i class="fas fa-shopping-cart"></i> Carrinho de Compras</h2>
+            <div id="cart-list"></div>
+            <p><strong>Total:</strong> R$ <span id="cart-total">0.00</span></p>
+            <button class="btn" onclick="finalizarCompra()"><i class="fas fa-check-circle"></i> Finalizar Compra</button>
+        </section>
     </div>
 
-    <section class="product-list-section">
-        <h2>Produtos Disponíveis</h2>
-        <div id="product-list" class="product-grid"></div>
-    </section>
-
-    <section class="cart-section">
-        <h2>Carrinho de Compras</h2>
-        <div id="cart-list"></div>
-        <p><strong>Total:</strong> R$ <span id="cart-total">0.00</span></p>
-        <button class="btn" onclick="finalizarCompra()">Finalizar Compra</button>
-    </section>
+    <footer>
+        <p>&copy; 2025 Hackaton. Todos os direitos reservados.</p>
+    </footer>
 
     <script src="js/pagina2.js"></script>
 </body>
