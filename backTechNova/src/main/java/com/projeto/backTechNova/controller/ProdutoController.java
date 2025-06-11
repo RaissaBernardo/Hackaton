@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -47,11 +48,49 @@ public class ProdutoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PutMapping("/nome/{nome}")
+    public ResponseEntity<?> atualizarProdutoPorNome(@PathVariable String nome, @RequestBody Produto produtoAtualizado) {
+        try {
+            Optional<Produto> produto = produtoService.atualizarProdutoPorNome(nome, produtoAtualizado);
+            return produto.<ResponseEntity<?>>map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("mensagem", "Produto com o nome '" + nome + "' não encontrado.");
+                        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+                    });
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", "Erro interno ao tentar atualizar o produto: " + e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PatchMapping("/{id}/estoque")
     public ResponseEntity<Produto> atualizarEstoque(@PathVariable Long id, @RequestParam Integer novaQuantidade) {
         Optional<Produto> produto = produtoService.atualizarEstoque(id, novaQuantidade);
         return produto.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PatchMapping("/nome/{nome}/estoque")
+    public ResponseEntity<?> atualizarEstoquePorNome(@PathVariable String nome, @RequestParam Integer novaQuantidade) {
+        try {
+            Optional<Produto> produto = produtoService.atualizarEstoquePorNome(nome, novaQuantidade);
+            return produto.<ResponseEntity<?>>map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                    .orElseGet(() -> {
+                        Map<String, String> errorResponse = new HashMap<>();
+                        errorResponse.put("mensagem", "Produto com o nome '" + nome + "' não encontrado.");
+                        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+                    });
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", "Requisição inválida: " + e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("mensagem", "Erro interno ao tentar atualizar o estoque do produto: " + e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")

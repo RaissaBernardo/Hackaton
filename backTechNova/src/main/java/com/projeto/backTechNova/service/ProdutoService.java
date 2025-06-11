@@ -51,6 +51,30 @@ public class ProdutoService {
     }
 
     @Transactional
+    public Optional<Produto> atualizarProdutoPorNome(String nome, Produto produtoAtualizado) {
+        try {
+            Optional<Produto> produtoExistente = produtoRepository.findByNome(nome);
+            if (produtoExistente.isPresent()) {
+                Produto produto = produtoExistente.get();
+                produto.setNome(produtoAtualizado.getNome());
+                produto.setTextoDescritivo(produtoAtualizado.getTextoDescritivo());
+                produto.setCor(produtoAtualizado.getCor());
+                produto.setFabricante(produtoAtualizado.getFabricante());
+                produto.setPreco(produtoAtualizado.getPreco());
+                produto.setQuantidade(produtoAtualizado.getQuantidade());
+                produto.setImagens(produtoAtualizado.getImagens());
+
+                return Optional.of(produtoRepository.save(produto));
+            } else {
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar produto pelo nome '" + nome + "': " + e.getMessage());
+            throw new RuntimeException("Ocorreu um erro ao tentar atualizar o produto pelo nome: " + e.getMessage());
+        }
+    }
+
+    @Transactional
     public Optional<Produto> atualizarEstoque(Long id, Integer novaQuantidade) {
         Optional<Produto> produtoExistente = produtoRepository.findById(id);
         if (produtoExistente.isPresent()) {
@@ -63,6 +87,29 @@ public class ProdutoService {
             }
         }
         return Optional.empty();
+    }
+
+    @Transactional
+    public Optional<Produto> atualizarEstoquePorNome(String nome, Integer novaQuantidade) {
+        try {
+            Optional<Produto> produtoExistente = produtoRepository.findByNome(nome);
+            if (produtoExistente.isPresent()) {
+                Produto produto = produtoExistente.get();
+                if (novaQuantidade >= 0) {
+                    produto.setQuantidade(novaQuantidade);
+                    return Optional.of(produtoRepository.save(produto));
+                } else {
+                    throw new IllegalArgumentException("A nova quantidade não pode ser negativa.");
+                }
+            } else {
+                return Optional.empty();
+            }
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar estoque pelo nome '" + nome + "': " + e.getMessage());
+            throw new RuntimeException("Ocorreu um erro ao tentar atualizar o estoque pelo nome: " + e.getMessage());
+        }
     }
 
     @Transactional
