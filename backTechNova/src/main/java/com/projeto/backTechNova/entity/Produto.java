@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
+@Table(name = "produtos")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +16,7 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "INT")
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -36,7 +38,7 @@ public class Produto {
     private Integer quantidade;
 
     @ElementCollection
-    @CollectionTable(name = "imagens_produto", joinColumns = @JoinColumn(name = "produto_id")) // Ajustado: nome da tabela de imagens e typo
-    @Column(name = "url_imagem", length = 250)
+    @CollectionTable(name = "imagens_produto", joinColumns = @JoinColumn(name = "produto_id"))
+    @Column(name = "url_imagem", length = 250, nullable = false)
     private List<String> imagens;
 }

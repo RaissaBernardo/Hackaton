@@ -73,4 +73,10 @@ public class ProdutoService {
         }
         return false;
     }
+
+    @Transactional
+    public boolean deletarProdutoPorNome(String nome) {
+        Long deletedCount = produtoRepository.deleteByNome(nome);
+        return deletedCount > 0;
+    }
 }

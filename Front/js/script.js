@@ -28,7 +28,7 @@ function cadastrarProduto() {
     formData.append("imagem", imagem);
   }
 
-  fetch('http://localhost:8080/produtos', {
+  fetch('http://localhost:8080/api/produtos', {
     method: 'POST',
     body: formData
   })
@@ -45,7 +45,7 @@ function cadastrarProduto() {
 function removerProduto() {
   const nome = document.getElementById('nomeRemover').value;
 
-  fetch(`http://localhost:8080/produtos/${encodeURIComponent(nome)}`, {
+  fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(nome)}`, {
     method: 'DELETE'
   })
   .then(response => {

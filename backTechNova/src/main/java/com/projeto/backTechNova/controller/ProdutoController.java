@@ -59,4 +59,10 @@ public class ProdutoController {
         boolean deletado = produtoService.deletarProduto(id);
         return deletado ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @DeleteMapping("/nome/{nome}")
+    public ResponseEntity<Void> deletarProdutoPorNome(@PathVariable String nome) {
+        boolean deletado = produtoService.deletarProdutoPorNome(nome);
+        return deletado ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
