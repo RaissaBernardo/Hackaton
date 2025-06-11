@@ -49,7 +49,7 @@ function cadastrarProduto() {
 
     const produtoData = {
         nome: nome,
-        descricao: descricao,
+        textoDescritivo: descricao,
         cor: cor,
         fabricante: fabricante,
         preco: preco,

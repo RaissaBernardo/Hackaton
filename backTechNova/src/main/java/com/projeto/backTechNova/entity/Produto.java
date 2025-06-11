@@ -22,7 +22,7 @@ public class Produto {
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @Column(nullable = false, length = 250)
+    @Column(name = "textoDescritivo",nullable = false, length = 250)
     private String textoDescritivo;
 
     @Column(nullable = false, length = 50)
