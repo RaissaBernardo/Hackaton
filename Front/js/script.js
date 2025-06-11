@@ -1,40 +1,37 @@
 function previewImagem() {
-  const file = document.getElementById('imagem').files[0];
+  const url = document.getElementById('imagem').value;
   const preview = document.getElementById('preview');
 
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-      preview.hidden = false;
-    };
-    reader.readAsDataURL(file);
+  if (url && url.startsWith('http')) {
+    preview.src = url;
+    preview.hidden = false;
   } else {
     preview.hidden = true;
   }
 }
 
 function cadastrarProduto() {
-  const formData = new FormData();
-  formData.append("nome", document.getElementById('nome').value);
-  formData.append("descricao", document.getElementById('descricao').value);
-  formData.append("cor", document.getElementById('cor').value);
-  formData.append("fabricante", document.getElementById('fabricante').value);
-  formData.append("preco", document.getElementById('preco').value);
-  formData.append("quantidade", document.getElementById('quantidade').value);
+  const produto = {
+    nome: document.getElementById('nome').value,
+    descricao: document.getElementById('descricao').value,
+    cor: document.getElementById('cor').value,
+    fabricante: document.getElementById('fabricante').value,
+    preco: document.getElementById('preco').value,
+    quantidade: document.getElementById('quantidade').value,
+    imagem: document.getElementById('imagem').value
+  };
 
-  const imagem = document.getElementById('imagem').files[0];
-  if (imagem) {
-    formData.append("imagem", imagem);
-  }
-
-  fetch('http://localhost:8080/api/produtos', {
+  fetch('http://localhost:8080/produtos', {
     method: 'POST',
-    body: formData
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(produto)
   })
   .then(response => {
     if (response.ok) {
       alert('Produto cadastrado com sucesso!');
+      limparCampos();
     } else {
       alert('Erro ao cadastrar o produto.');
     }
@@ -43,17 +40,29 @@ function cadastrarProduto() {
 }
 
 function removerProduto() {
-  const nome = document.getElementById('nomeRemover').value;
+  const nome = document.getElementById('removerNome').value;
 
-  fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(nome)}`, {
+  fetch(`http://localhost:8080/produtos/${encodeURIComponent(nome)}`, {
     method: 'DELETE'
   })
   .then(response => {
     if (response.ok) {
       alert('Produto removido com sucesso!');
+      document.getElementById('removerNome').value = '';
     } else {
       alert('Erro ao remover o produto.');
     }
   })
   .catch(error => console.error('Erro:', error));
+}
+
+function limparCampos() {
+  document.getElementById('nome').value = '';
+  document.getElementById('descricao').value = '';
+  document.getElementById('cor').value = '';
+  document.getElementById('fabricante').value = '';
+  document.getElementById('preco').value = '';
+  document.getElementById('quantidade').value = '';
+  document.getElementById('imagem').value = '';
+  document.getElementById('preview').hidden = true;
 }

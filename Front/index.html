@@ -34,9 +34,10 @@
       <label>Quantidade:
         <input type="number" id="quantidade">
       </label>
-      <label>Imagem do produto:
-        <input type="file" id="imagem" accept="image/*" onchange="previewImagem()">
+      <label>Link da imagem do produto:
+        <input type="url" id="imagem" placeholder="https://exemplo.com/imagem.jpg" oninput="previewImagem()">
       </label>
+
 
       <button class="btn" onclick="cadastrarProduto()">📦 Cadastrar Produto</button>
     </div>
