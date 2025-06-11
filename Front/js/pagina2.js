@@ -9,7 +9,7 @@ function buscarTodosProdutos() {
         })
         .then(produtos => {
             produtosDisponiveis = produtos;
-            localStorage.setItem('produtos', JSON.stringify(produtos)); // Cache for cart simulation
+            localStorage.setItem('produtos', JSON.stringify(produtos));
             exibirProdutos(produtosDisponiveis);
             exibirCarrinho();
         })
@@ -120,7 +120,7 @@ function atualizarQuantidadeCarrinho(nomeProduto, novaQuantidade) {
     } else {
         alert('Quantidade excede o estoque disponível.');
         item.quantidadeCarrinho = produto.quantidade;
-        event.target.value = produto.quantidade;
+        // event.target.value = produto.quantidade; // Isso pode causar um erro se event não estiver definido
     }
     localStorage.setItem('carrinho', JSON.stringify(cart));
     exibirCarrinho();
@@ -128,23 +128,48 @@ function atualizarQuantidadeCarrinho(nomeProduto, novaQuantidade) {
 
 function finalizarCompra() {
     if (cart.length === 0) {
-        alert('Carrinho vazio!');
+        alert('Carrinho vazio! Adicione produtos antes de finalizar a compra.');
         return;
     }
 
-    cart.forEach(item => {
-        const produto = produtosDisponiveis.find(p => p.quantidade === item.quantidade);
-        if (produto) {
-            produto.quantidade -= item.quantidadeCarrinho;
+    const promises = cart.map(itemNoCarrinho => {
+        const produtoOriginal = produtosDisponiveis.find(p => p.nome === itemNoCarrinho.nome);
+
+        if (!produtoOriginal || produtoOriginal.quantidade < itemNoCarrinho.quantidadeCarrinho) {
+            alert(`Erro: Estoque insuficiente para ${itemNoCarrinho.nome}. Compra não finalizada.`);
+            return Promise.reject(new Error(`Estoque insuficiente para ${itemNoCarrinho.nome}`));
         }
+
+        const novaQuantidadeEstoque = produtoOriginal.quantidade - itemNoCarrinho.quantidadeCarrinho;
+
+        return fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(itemNoCarrinho.nome)}/estoque?novaQuantidade=${novaQuantidadeEstoque}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    throw new Error(errorData.mensagem || `Erro ao atualizar estoque para ${itemNoCarrinho.nome}. Status: ${response.status}`);
+                }).catch(() => {
+                    throw new Error(`Erro desconhecido ao atualizar estoque para ${itemNoCarrinho.nome}. Status: ${response.status}`);
+                });
+            }
+            return response.json();
+        });
     });
 
-    produtosDisponiveis = produtosDisponiveis.filter(p => p.quantidade >= 0);
-    localStorage.setItem('produtos', JSON.stringify(produtosDisponiveis));
-    cart = [];
-    localStorage.setItem('carrinho', JSON.stringify(cart));
-    alert('Compra finalizada com sucesso!');
-    buscarTodosProdutos();
+    Promise.all(promises)
+        .then(() => {
+            cart = [];
+            localStorage.setItem('carrinho', JSON.stringify(cart));
+            alert('Compra finalizada e estoque atualizado com sucesso!');
+            buscarTodosProdutos();
+        })
+        .catch(error => {
+            alert(`Falha ao finalizar a compra: ${error.message}`);
+        });
 }
 
 function toggleMenu() {
@@ -156,4 +181,5 @@ document.addEventListener('DOMContentLoaded', () => {
     cart = JSON.parse(localStorage.getItem('carrinho')) || [];
     buscarTodosProdutos();
     document.getElementById('busca-nome').addEventListener('input', buscarProdutoPorNome);
+    exibirCarrinho();
 });

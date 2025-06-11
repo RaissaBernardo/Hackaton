@@ -89,6 +89,46 @@
         <div id="product-list" class="product-grid"></div>
     </section>
 
+    <div id="editProductModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="fecharModal()">&times;</span>
+        <h2>Editar Produto</h2>
+        <form id="edit-product-form">
+            <input type="hidden" id="edit-original-nome">
+            <label>Nome:
+                <input type="text" id="edit-nome">
+                <span id="error-edit-nome" class="error"></span>
+            </label>
+            <label>Descrição:
+                <textarea id="edit-descricao"></textarea>
+                <span id="error-edit-descricao" class="error"></span>
+            </label>
+            <label>Cor:
+                <input type="text" id="edit-cor">
+                <span id="error-edit-cor" class="error"></span>
+            </label>
+            <label>Fabricante:
+                <input type="text" id="edit-fabricante">
+                <span id="error-edit-fabricante" class="error"></span>
+            </label>
+            <label>Preço:
+                <input type="number" id="edit-preco" step="0.01">
+                <span id="error-edit-preco" class="error"></span>
+            </label>
+            <label>Quantidade:
+                <input type="number" id="edit-quantidade">
+                <span id="error-edit-quantidade" class="error"></span>
+            </label>
+            <div id="edit-imagens-container"></div>
+            <button type="button" class="btn" onclick="adicionarCampoImagemModal()">+ Adicionar outra imagem</button>
+            <div id="edit-preview-container" class="image-preview-container"></div>
+            <span id="error-edit-imagens" class="error"></span>
+            <button type="button" class="btn" onclick="atualizarProdutoPeloNome()">Atualizar Produto</button>
+            <button type="button" class="btn" onclick="fecharModal()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
     <script src="js/index.js"></script>
 </body>
 </html>

@@ -64,8 +64,6 @@ function cadastrarProduto() {
             } else {
                 urlInvalida = true;
             }
-        } else {
-            urlInvalida = true;
         }
     });
 
@@ -218,31 +216,76 @@ function exibirProdutos(lista) {
         const productCard = document.createElement('div');
         productCard.classList.add('product-card');
 
-        let imagensHtml = '';
+        let galleryHtml = '';
         if (produto.imagens && produto.imagens.length > 0) {
-            imagensHtml = `<img src="${produto.imagens[0]}" alt="${produto.nome}" class="product-image">`;
+            galleryHtml += `
+                <div class="main-image-display">
+                    <img src="${produto.imagens[0]}" alt="${produto.nome}" class="product-image">
+                </div>`;
             if (produto.imagens.length > 1) {
-                imagensHtml += `<div class="thumbnail-container">`;
-                produto.imagens.slice(1).forEach(url => {
-                    imagensHtml += `<img src="${url}" alt="Thumbnail" class="product-thumbnail">`;
+                galleryHtml += `<div class="thumbnail-gallery">`;
+                produto.imagens.forEach((url, index) => {
+                    const activeClass = (index === 0) ? 'active-thumbnail' : '';
+                    galleryHtml += `<img src="${url}" alt="Miniatura ${index + 1}" class="product-thumbnail ${activeClass}" onclick="changeMainImage(this)">`;
                 });
-                imagensHtml += `</div>`;
+                galleryHtml += `</div>`;
             }
         } else {
-            imagensHtml = `<p>Sem imagem</p>`;
+            galleryHtml = `<p>Sem imagem</p>`;
+        }
+
+        let actionButtonsHtml = '';
+        if (isLoggedIn) {
+            // Use encodeURIComponent and JSON.stringify with proper escaping
+            const escapedNome = encodeURIComponent(produto.nome);
+            const escapedJson = JSON.stringify(produto).replace(/"/g, '&quot;');
+            actionButtonsHtml = `
+                <div class="product-actions">
+                    <button class="btn small" onclick="abrirModalEdicao(decodeURIComponent('${escapedNome}'), '${escapedJson}')">✏️ Editar</button>
+                    <button class="btn danger small" onclick="removerProdutoPorId(${produto.id})">🗑️ Remover por ID</button>
+                </div>
+            `;
         }
 
         productCard.innerHTML = `
-            ${imagensHtml}
+            ${galleryHtml}
             <h3>${produto.nome}</h3>
             <p><strong>Descrição:</strong> ${produto.textoDescritivo}</p>
             <p><strong>Cor:</strong> ${produto.cor}</p>
             <p><strong>Fabricante:</strong> ${produto.fabricante}</p>
-            <p><strong>Preço:</strong> R$ ${produto.preco.toFixed(2)}</p>
-            <p><strong>Quantidade:</strong> ${produto.quantidade}</p>
+            <p><strong>Preço:</strong> R$ ${produto.preco ? produto.preco.toFixed(2) : 'N/A'}</p>
+            <p><strong>Quantidade:</strong> ${produto.quantidade ? produto.quantidade : 'N/A'}</p>
+            ${actionButtonsHtml}
         `;
         productListDiv.appendChild(productCard);
     });
+}
+
+function removerProdutoPorId(id) {
+    if (!isLoggedIn) {
+        alert('Faça login para remover produtos.');
+        return;
+    }
+    if (confirm(`Tem certeza que deseja remover o produto com ID: ${id}?`)) {
+        fetch(`http://localhost:8080/api/produtos/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Produto removido com sucesso!');
+                buscarTodosProdutos();
+            } else if (response.status === 404) {
+                alert('Produto não encontrado.');
+            } else {
+                response.json().then(data => {
+                    alert('Erro ao remover: ' + (data.message || response.statusText));
+                }).catch(() => {
+                    alert('Erro ao remover produto.');
+                });
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
 }
 
 function limparCamposCadastro() {
@@ -259,6 +302,172 @@ function limparCamposCadastro() {
     document.getElementById('preview-container').innerHTML = '';
 }
 
+function changeMainImage(clickedThumbnail) {
+    const productCard = clickedThumbnail.closest('.product-card');
+    if (!productCard) return;
+
+    const mainImage = productCard.querySelector('.main-image-display .product-image');
+    if (!mainImage) return;
+
+    mainImage.src = clickedThumbnail.src;
+
+    productCard.querySelectorAll('.product-thumbnail').forEach(thumb => {
+        thumb.classList.remove('active-thumbnail');
+    });
+    clickedThumbnail.classList.add('active-thumbnail');
+}
+
+function abrirModalEdicao(nomeOriginal, produtoDataJsonString) {
+    if (!isLoggedIn) {
+        alert('Faça login para editar produtos.');
+        return;
+    }
+    console.log('Abrindo modal com nome:', nomeOriginal, 'e JSON:', produtoDataJsonString);
+    const produtoData = JSON.parse(produtoDataJsonString);
+    const modal = document.getElementById('editProductModal');
+    console.log('Modal element:', modal);
+    modal.style.display = 'flex';
+
+    document.getElementById('edit-original-nome').value = nomeOriginal;
+    document.getElementById('edit-nome').value = produtoData.nome;
+    document.getElementById('edit-descricao').value = produtoData.textoDescritivo;
+    document.getElementById('edit-cor').value = produtoData.cor;
+    document.getElementById('edit-fabricante').value = produtoData.fabricante;
+    document.getElementById('edit-preco').value = produtoData.preco;
+    document.getElementById('edit-quantidade').value = produtoData.quantidade;
+
+    const imagensContainerModal = document.getElementById('edit-imagens-container');
+    imagensContainerModal.innerHTML = '';
+
+    if (produtoData.imagens && produtoData.imagens.length > 0) {
+        produtoData.imagens.forEach((url, index) => {
+            const newLabel = document.createElement('label');
+            newLabel.innerHTML = `URL da Imagem (${index + 1}): <input type="url" class="imagem-url-input-modal" value="${url}" oninput="previewImagesModal()">`;
+            imagensContainerModal.appendChild(newLabel);
+        });
+    } else {
+        const newLabel = document.createElement('label');
+        newLabel.innerHTML = `URL da Imagem (1): <input type="url" class="imagem-url-input-modal" oninput="previewImagesModal()">`;
+        imagensContainerModal.appendChild(newLabel);
+    }
+    previewImagesModal();
+}
+
+function fecharModal() {
+    const modal = document.getElementById('editProductModal');
+    modal.style.display = 'none';
+}
+
+function adicionarCampoImagemModal() {
+    const imagensContainerModal = document.getElementById('edit-imagens-container');
+    const newLabel = document.createElement('label');
+    const inputCount = document.querySelectorAll('.imagem-url-input-modal').length + 1;
+    newLabel.innerHTML = `URL da Imagem (${inputCount}): <input type="url" class="imagem-url-input-modal" placeholder="https://exemplo.com/imagem${inputCount}.jpg" oninput="previewImagesModal()">`;
+    imagensContainerModal.appendChild(newLabel);
+}
+
+function previewImagesModal() {
+    const previewContainerModal = document.getElementById('edit-preview-container');
+    previewContainerModal.innerHTML = '';
+
+    const allImageInputsModal = document.querySelectorAll('.imagem-url-input-modal');
+    allImageInputsModal.forEach(input => {
+        const url = input.value;
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'Prévia da imagem';
+            img.classList.add('image-preview');
+            previewContainerModal.appendChild(img);
+        }
+    });
+}
+
+function atualizarProdutoPeloNome() {
+    if (!isLoggedIn) {
+        alert('Faça login para atualizar produtos.');
+        return;
+    }
+    const originalNome = document.getElementById('edit-original-nome').value;
+    const novoNome = document.getElementById('edit-nome').value.trim();
+    const novaDescricao = document.getElementById('edit-descricao').value.trim();
+    const novaCor = document.getElementById('edit-cor').value.trim();
+    const novoFabricante = document.getElementById('edit-fabricante').value.trim();
+    const novoPrecoStr = document.getElementById('edit-preco').value.trim();
+    const novaQuantidadeStr = document.getElementById('edit-quantidade').value.trim();
+
+    const novoPreco = parseFloat(novoPrecoStr);
+    const novaQuantidade = parseInt(novaQuantidadeStr);
+
+    const novasImagens = [];
+    let urlInvalida = false;
+    document.querySelectorAll('.imagem-url-input-modal').forEach(input => {
+        const url = input.value.trim();
+        if (url) {
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                novasImagens.push(url);
+            } else {
+                urlInvalida = true;
+            }
+        }
+    });
+
+    let temErro = false;
+    if (!novoNome) { temErro = true; alert("O nome no modal é obrigatório."); }
+    if (!novaDescricao) { temErro = true; alert("A descrição no modal é obrigatória."); }
+    if (!novaCor) { temErro = true; alert("A cor no modal é obrigatória."); }
+    if (!novoFabricante) { temErro = true; alert("O fabricante no modal é obrigatório."); }
+    if (isNaN(novoPreco)) { temErro = true; alert("O preço no modal deve ser um número válido."); }
+    if (isNaN(novaQuantidade)) { temErro = true; alert("A quantidade no modal deve ser um número válido."); }
+    if (novasImagens.length === 0 || urlInvalida) { temErro = true; alert("Todas as URLs de imagens no modal são obrigatórias e devem começar com http:// ou https://"); }
+    if (temErro) return;
+
+    const produtoAtualizadoData = {
+        nome: novoNome,
+        textoDescritivo: novaDescricao,
+        cor: novaCor,
+        fabricante: novoFabricante,
+        preco: novoPreco,
+        quantidade: novaQuantidade,
+        imagens: novasImagens
+    };
+
+    fetch(`http://localhost:8080/api/produtos/nome/${encodeURIComponent(originalNome)}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(produtoAtualizadoData)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Produto atualizado com sucesso!');
+            fecharModal();
+            buscarTodosProdutos();
+        } else {
+            response.json().then(errorData => {
+                alert('Erro ao atualizar o produto: ' + (errorData.mensagem || response.statusText));
+            }).catch(() => {
+                alert('Erro ao atualizar o produto: ' + response.statusText);
+            });
+        }
+    })
+    .catch(error => console.error('Erro de rede ou na requisição de atualização:', error));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    buscarTodosProdutos();
+    document.getElementById('busca-nome').addEventListener('input', buscarProdutoPorNome);
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('cadastro-section').style.display = 'none';
+    document.querySelector('.remove-section').style.display = 'none';
+});
+
+function toggleMenu() {
+    const menu = document.getElementById('menu-links');
+    menu.classList.toggle('active');
+}
+
 function fazerLogin() {
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -268,19 +477,11 @@ function fazerLogin() {
         isLoggedIn = true;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('cadastro-section').style.display = 'block';
+        document.querySelector('.remove-section').style.display = 'block';
+        document.querySelector('.search-bar').style.display = 'flex';
         alert('Login realizado com sucesso!');
         buscarTodosProdutos();
     } else {
         errorMessage.textContent = 'Usuário ou senha inválidos.';
     }
 }
-
-function toggleMenu() {
-    const menu = document.getElementById('menu-links');
-    menu.classList.toggle('active');
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    buscarTodosProdutos();
-    document.getElementById('busca-nome').addEventListener('input', buscarProdutoPorNome);
-});
